@@ -1,31 +1,35 @@
 import my_framework
 
 from my_engine import *
+from data import *
 
 name = "StartState"
 
+
 def enter():
+    global data
     open_canvas(1024, 768)
     hide_lattice()
-
+    data = Data()
 
 def exit():
+    global data
+    del(data)
+
     pass
 
 def update():
+    data.update()
     pass
     #delay(0.015)
 
 def draw():
-    global image
+    global data
     clear_canvas()
 
+    data.draw()
+
     update_canvas()
-
-
-def handle_events():
-    events = get_events()
-    pass
 
 
 def pause(): pass
