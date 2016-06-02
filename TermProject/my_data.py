@@ -19,10 +19,9 @@ class GetData:
         f = open("data.xml", "wb")
         f.write(xml)
         f.close()
-        print("정보 가져오기 완료")
         pass
 
-    def print(self):
+    def test_print(self):
 
 
         for a in self.root.iter("list"):
