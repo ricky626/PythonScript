@@ -11,8 +11,8 @@ class GetData:
         self.tree = etree.parse("data.xml")
         self.root = self.tree.getroot()
 
-
         pass
+
 
     def save(self):
         xml = urllib.request.urlopen(self.url).read()
@@ -21,8 +21,8 @@ class GetData:
         f.close()
         pass
 
-    def test_print(self):
 
+    def test_print(self):
 
         for a in self.root.iter("list"):
             print(a.findtext("batchMenu"))

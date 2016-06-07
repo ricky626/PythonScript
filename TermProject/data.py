@@ -27,6 +27,9 @@ class Data:
     home = None
     button = [None for i in range(0, 5)]
 
+    SERVICE_AREA_NAME, ROUTE_NAME, BATCH_MENU, DIRECTION, SALE_PRICE = range(0, 5)
+
+
     def __init__(self):
         my_data.save()
 
@@ -61,19 +64,44 @@ class Data:
         self.serviceAreaName = [] #휴게소이름
         self.nodecount = 185
         self.state = -1
+        self.scrollmax = 0
+        self.menustate = [-1 for i in range(0, 3)]
+
         self.page = 0
         self.DownKeyCheck = False
         self.UpKeyCheck =  False
 
         for a in self.root.iter("list"):
-            self.batchMenu.append(a.findtext("batchMenu"))
+            if(a.findtext("batchMenu") != None):
+                self.batchMenu.append(a.findtext("batchMenu"))
+            if(a.findtext("direction") != None):
+                self.direction.append(a.findtext("direction"))
+            if(a.findtext("routeName") != None):
+                self.routeName.append(a.findtext("routeName"))
+            if(a.findtext("salePrice") != None):
+                self.salePrice.append(a.findtext("salePrice"))
+            if(a.findtext("serviceAreaName") != None):
+                self.serviceAreaName.append(a.findtext("serviceAreaName") + " 휴게소")
 
-            self.direction.append(a.findtext("direction"))
-            self.routeName.append(a.findtext("routeName"))
+        self.batchMenu = list(set(self.batchMenu))
+        self.direction = list(set(self.direction))
+        self.routeName = list(set(self.routeName))
+        self.salePrice = list(set(self.salePrice))
+        self.serviceAreaName = list(set(self.serviceAreaName))
 
-            self.salePrice.append(a.findtext("salePrice"))
+        self.batchMenu.sort()
+        self.direction.sort()
+        self.routeName.sort()
+        self.salePrice.sort()
+        self.serviceAreaName.sort()
 
-            self.serviceAreaName.append(a.findtext("serviceAreaName") + " 휴게소")
+        print(len(self.serviceAreaName))
+        print(len(self.routeName))
+        print(len(self.direction))
+        print(len(self.batchMenu))
+        print(len(self.salePrice))
+
+
 
         pass
 
@@ -114,36 +142,26 @@ class Data:
 
             if(self.state == 0):
                 for i in range(self.page, self.page + 20):
-                    if(self.serviceAreaName[i] == None):
-                        continue
                     SCREEN.blit(self.font30.render(self.serviceAreaName[i], True, BLACK), (120, 134 + (i * 30) - (self.page * 30)))
                 pass
 
             if(self.state == 1):
-                for i in range(self.page, self.page + 20):
-                    if(self.routeName[i] == None):
-                        continue
+                for i in range(self.page, self.page + 19):
                     SCREEN.blit(self.font30.render(self.routeName[i], True, BLACK), (120, 134 + (i * 30) - (self.page * 30)))
                 pass
 
             if(self.state == 2):
                 for i in range(self.page, self.page + 20):
-                    if(self.direction[i] == None):
-                        continue
                     SCREEN.blit(self.font30.render(self.direction[i], True, BLACK), (120, 134 + (i * 30) - (self.page * 30)))
                 pass
 
             if(self.state == 3):
                 for i in range(self.page, self.page + 20):
-                    if(self.batchMenu[i] == None):
-                        continue
                     SCREEN.blit(self.font30.render(self.batchMenu[i], True, BLACK), (120, 134 + (i * 30) - (self.page * 30)))
                 pass
 
             if(self.state == 4):
-                for i in range(self.page, self.page + 20):
-                    if(self.salePrice[i] == None):
-                        continue
+                for i in range(self.page, self.page + 16):
                     SCREEN.blit(self.font30.render(self.salePrice[i], True, BLACK), (120, 134 + (i * 30) - (self.page * 30)))
                 pass
 
@@ -152,25 +170,37 @@ class Data:
 
 
     def handle_events(self, event):
-        global mx, my
 
         if(event.type == pygame.MOUSEBUTTONDOWN):
             (mx, my) = pygame.mouse.get_pos()
 
             if(event.button == MOUSE_LEFT):
+
                 for i in range(0, 5):
                     if(self.collide(mx, my, self.buttonX[i], self.buttonY[i], 400, 80) and self.state == -1):
                         self.state = i
+                        if(self.state == self.SERVICE_AREA_NAME):
+                            self.scrollmax = len(self.serviceAreaName)
+                        elif(self.state == self.ROUTE_NAME):
+                            self.scrollmax = len(self.routeName)
+                        elif(self.state == self.DIRECTION):
+                            self.scrollmax = len(self.direction)
+                        elif(self.state == self.BATCH_MENU):
+                            self.scrollmax = len(self.batchMenu)
+                        elif(self.state == self.SALE_PRICE):
+                            self.scrollmax = len(self.salePrice)
+
                         break
                 if(self.collide(mx, my, 8, 680, 80, 80) and self.state != -1): # home 버튼 + 마우스 충돌 시
                         self.state = -1
                         self.page = 0
+                        self.scrollmax = 0
 
 
             if(self.state != -1):
                 if(event.type == pygame.MOUSEBUTTONDOWN):
                     if(event.button == MOUSE_WHEEL_DOWN):
-                        if(self.page < 185 - 30):
+                        if(self.page < self.scrollmax - 20):
                             self.page += 1
                     if(event.button == MOUSE_WHEEL_UP):
                         if(self.page > 0):
