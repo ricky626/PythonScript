@@ -27,7 +27,7 @@ class Data:
     home = None
     button = [None for i in range(0, 5)]
 
-    SERVICE_AREA_NAME, ROUTE_NAME, BATCH_MENU, DIRECTION, SALE_PRICE = range(0, 5)
+    SERVICE_AREA_NAME, ROUTE_NAME, DIRECTION, BATCH_MENU, SALE_PRICE = range(0, 5)
 
 
     def __init__(self):
@@ -62,26 +62,70 @@ class Data:
         self.routeName = [] # ㅇㅇ고속도로
         self.salePrice = [] # 대표 메뉴 가격
         self.serviceAreaName = [] #휴게소이름
-        self.nodecount = 185
+
+        self.count = -1
+        self.listlen = -1
+
         self.state = -1
+        self.serstate = -1
+
         self.scrollmax = 0
-        self.menustate = [-1 for i in range(0, 3)]
 
         self.page = 0
+        self.maxpage = 0
         self.DownKeyCheck = False
         self.UpKeyCheck =  False
+        self.MenuKeyCheck = -100
 
         for a in self.root.iter("list"):
-            if(a.findtext("batchMenu") != None):
+            if(a.findtext("batchMenu") == None):
+                self.batchMenu.append(" ")
+            else:
                 self.batchMenu.append(a.findtext("batchMenu"))
-            if(a.findtext("direction") != None):
+
+            if(a.findtext("direction") == None):
+                self.direction.append(" ")
+            else:
                 self.direction.append(a.findtext("direction"))
-            if(a.findtext("routeName") != None):
+
+            if(a.findtext("routeName") == None):
+                self.routeName.append(" ")
+            else:
                 self.routeName.append(a.findtext("routeName"))
-            if(a.findtext("salePrice") != None):
+
+            if(a.findtext("salePrice") == None):
+                self.salePrice.append(" ")
+            else:
                 self.salePrice.append(a.findtext("salePrice"))
-            if(a.findtext("serviceAreaName") != None):
-                self.serviceAreaName.append(a.findtext("serviceAreaName") + " 휴게소")
+
+            if(a.findtext("serviceAreaName") == None):
+                self.serviceAreaName.append(" ")
+            else:
+                self.serviceAreaName.append(a.findtext("serviceAreaName"))
+
+        self.sbatchMenu = []
+        self.sdirection = []
+        self.srouteName = []
+        self.ssalePrice = []
+        self.sserviceAreaName = []
+
+        self.ibatchMenu = []
+        self.idirection = []
+        self.irouteName = []
+        self.isalePrice = []
+        self.iserviceAreaName = []
+
+
+
+        self.sbatchMenu.extend(self.batchMenu)
+        self.sdirection.extend(self.direction)
+        self.srouteName.extend(self.routeName)
+        self.ssalePrice.extend(self.salePrice)
+
+
+        self.sserviceAreaName.extend(self.serviceAreaName)
+
+
 
         self.batchMenu = list(set(self.batchMenu))
         self.direction = list(set(self.direction))
@@ -89,17 +133,21 @@ class Data:
         self.salePrice = list(set(self.salePrice))
         self.serviceAreaName = list(set(self.serviceAreaName))
 
+
         self.batchMenu.sort()
         self.direction.sort()
         self.routeName.sort()
         self.salePrice.sort()
         self.serviceAreaName.sort()
 
-        print(len(self.serviceAreaName))
-        print(len(self.routeName))
-        print(len(self.direction))
-        print(len(self.batchMenu))
-        print(len(self.salePrice))
+        self.salePrice.pop(0)
+
+
+        # print(len(self.serviceAreaName))
+        # print(len(self.routeName))
+        # print(len(self.direction))
+        # print(len(self.batchMenu))
+        # print(len(self.salePrice))
 
 
 
@@ -121,6 +169,38 @@ class Data:
 
         pass
 
+    def print_all(self, SCREEN, numlist):
+
+        for i in numlist:
+            if(self.sserviceAreaName[i] != " "):
+                SCREEN.blit(self.font30.render(self.sserviceAreaName[i] + "휴게소", True, BLACK), (120, 204 + (numlist.index(i) * 180)))
+            else:
+                SCREEN.blit(self.font30.render("휴게소 정보 없음", True, BLACK), (120, 204 + (numlist.index(i) * 180)))
+
+
+            if(self.srouteName[i] != " "):
+                SCREEN.blit(self.font30.render(self.srouteName[i], True, BLACK), (120, 234 + (numlist.index(i) * 180)))
+            else:
+                SCREEN.blit(self.font30.render("지역 정보 없음", True, BLACK), (120, 234 + (numlist.index(i) * 180)))
+
+
+            if(self.sdirection[i] != " "):
+                SCREEN.blit(self.font30.render(self.sdirection[i], True, BLACK), (120, 264 + (numlist.index(i) * 180)))
+            else:
+                SCREEN.blit(self.font30.render("고속도로방향 정보 없음", True, BLACK), (120, 264 + (numlist.index(i) * 180)))
+
+
+            if(self.sbatchMenu[i] != " "):
+                SCREEN.blit(self.font30.render(self.sbatchMenu[i], True, BLACK), (120, 294 + (numlist.index(i) * 180)))
+            else:
+                SCREEN.blit(self.font30.render("대표메뉴 정보 없음", True, BLACK), (120, 294 + (numlist.index(i) * 180)))
+
+
+            if(self.ssalePrice[i] != " "):
+                SCREEN.blit(self.font30.render(self.ssalePrice[i].lstrip("￦") + "원", True, BLACK), (120, 324 + (numlist.index(i) * 180)))
+            else:
+                SCREEN.blit(self.font30.render("가격 정보 없음", True, BLACK), (120, 324 + (numlist.index(i) * 180)))
+
     def draw(self, SCREEN):
 
         SCREEN.blit(self.home, (8, 680))
@@ -140,30 +220,55 @@ class Data:
         else:
             SCREEN.blit(self.board, (112, 134))
 
-            if(self.state == 0):
-                for i in range(self.page, self.page + 20):
-                    SCREEN.blit(self.font30.render(self.serviceAreaName[i], True, BLACK), (120, 134 + (i * 30) - (self.page * 30)))
-                pass
+            if(self.serstate == -1):
+                if(self.state == self.SERVICE_AREA_NAME):
+                    for i in range(self.page, self.page + self.maxpage):
+                        SCREEN.blit(self.font30.render(self.serviceAreaName[i] + "휴게소", True, BLACK), (120, 134 + (i * 30) - (self.page * 30)))
+                    pass
 
-            if(self.state == 1):
-                for i in range(self.page, self.page + 19):
-                    SCREEN.blit(self.font30.render(self.routeName[i], True, BLACK), (120, 134 + (i * 30) - (self.page * 30)))
-                pass
+                if(self.state == self.ROUTE_NAME):
+                    for i in range(self.page, self.page + self.maxpage):
+                        SCREEN.blit(self.font30.render(self.routeName[i], True, BLACK), (120, 134 + (i * 30) - (self.page * 30)))
+                    pass
 
-            if(self.state == 2):
-                for i in range(self.page, self.page + 20):
-                    SCREEN.blit(self.font30.render(self.direction[i], True, BLACK), (120, 134 + (i * 30) - (self.page * 30)))
-                pass
+                if(self.state == self.DIRECTION):
+                    for i in range(self.page, self.page + self.maxpage):
+                        SCREEN.blit(self.font30.render(self.direction[i], True, BLACK), (120, 134 + (i * 30) - (self.page * 30)))
+                    pass
 
-            if(self.state == 3):
-                for i in range(self.page, self.page + 20):
-                    SCREEN.blit(self.font30.render(self.batchMenu[i], True, BLACK), (120, 134 + (i * 30) - (self.page * 30)))
-                pass
+                if(self.state == self.BATCH_MENU):
+                    for i in range(self.page, self.page + self.maxpage):
+                        SCREEN.blit(self.font30.render(self.batchMenu[i], True, BLACK), (120, 134 + (i * 30) - (self.page * 30)))
+                    pass
 
-            if(self.state == 4):
-                for i in range(self.page, self.page + 16):
-                    SCREEN.blit(self.font30.render(self.salePrice[i], True, BLACK), (120, 134 + (i * 30) - (self.page * 30)))
-                pass
+                if(self.state == self.SALE_PRICE):
+                    for i in range(self.page, self.page + self.maxpage):
+                        SCREEN.blit(self.font30.render(self.salePrice[i].lstrip("￦") + "원", True, BLACK), (120, 134 + (i * 30) - (self.page * 30)))
+                    pass
+
+                if(self.MenuKeyCheck != -100):
+                    if((self.MenuKeyCheck >= self.page) and (self.MenuKeyCheck - self.page < 20)):
+                        pygame.draw.line(SCREEN, BLACK, [115, 134 + (self.MenuKeyCheck * 30) - (self.page * 30)], [400, 134 + (self.MenuKeyCheck * 30) - (self.page * 30)], 5)
+                        pygame.draw.line(SCREEN, BLACK, [115, 164 + (self.MenuKeyCheck * 30) - (self.page * 30)], [400, 164 + (self.MenuKeyCheck * 30) - (self.page * 30)], 5)
+                        pygame.draw.line(SCREEN, BLACK, [115, 134 + (self.MenuKeyCheck * 30) - (self.page * 30)], [115, 164 + (self.MenuKeyCheck * 30) - (self.page * 30)], 5)
+                        pygame.draw.line(SCREEN, BLACK, [400, 134 + (self.MenuKeyCheck * 30) - (self.page * 30)], [400, 164 + (self.MenuKeyCheck * 30) - (self.page * 30)], 5)
+                    pygame.draw.polygon(SCREEN, (255, 100, 200), ((775, 350), (875, 350), (875, 450), (775, 450))) # 775, 350, 875, 450
+                    SCREEN.blit(self.font50.render("검색", True, BLACK), (790, 375))
+
+            else:
+                if(self.serstate == 1):
+                    SCREEN.blit(self.font50.render("검색하신 결과", True, BLACK), (400, 134))  # 설정한 위치에 텍스트 객체를 출력
+
+                    if(self.state == self.SERVICE_AREA_NAME):
+                        self.print_all(SCREEN, self.iserviceAreaName)
+                    elif(self.state == self.ROUTE_NAME):
+                        self.print_all(SCREEN, self.irouteName)
+                    elif(self.state == self.DIRECTION):
+                        self.print_all(SCREEN, self.idirection)
+                    elif(self.state == self.BATCH_MENU):
+                        self.print_all(SCREEN, self.ibatchMenu)
+                    elif(self.state == self.SALE_PRICE):
+                        self.print_all(SCREEN, self.isalePrice)
 
 
             pass
@@ -176,25 +281,47 @@ class Data:
 
             if(event.button == MOUSE_LEFT):
 
-                for i in range(0, 5):
-                    if(self.collide(mx, my, self.buttonX[i], self.buttonY[i], 400, 80) and self.state == -1):
-                        self.state = i
-                        if(self.state == self.SERVICE_AREA_NAME):
-                            self.scrollmax = len(self.serviceAreaName)
-                        elif(self.state == self.ROUTE_NAME):
-                            self.scrollmax = len(self.routeName)
-                        elif(self.state == self.DIRECTION):
-                            self.scrollmax = len(self.direction)
-                        elif(self.state == self.BATCH_MENU):
-                            self.scrollmax = len(self.batchMenu)
-                        elif(self.state == self.SALE_PRICE):
-                            self.scrollmax = len(self.salePrice)
+                if(self.state == -1):
+                    for i in range(0, 5):
+                        if(self.collide(mx, my, self.buttonX[i], self.buttonY[i], 400, 80)):
+                            self.state = i
+                            if(self.state == self.SERVICE_AREA_NAME):
+                                self.scrollmax = len(self.serviceAreaName)
+                                self.maxpage = 20
 
-                        break
+                            elif(self.state == self.ROUTE_NAME):
+                                self.scrollmax = len(self.routeName)
+                                self.maxpage = 19
+
+                            elif(self.state == self.DIRECTION):
+                                self.scrollmax = len(self.direction)
+                                self.maxpage = 20
+
+                            elif(self.state == self.BATCH_MENU):
+                                self.scrollmax = len(self.batchMenu)
+                                self.maxpage = 20
+
+                            elif(self.state == self.SALE_PRICE):
+                                self.scrollmax = len(self.salePrice)
+                                self.maxpage = 15
+
+                            break
+
                 if(self.collide(mx, my, 8, 680, 80, 80) and self.state != -1): # home 버튼 + 마우스 충돌 시
-                        self.state = -1
-                        self.page = 0
-                        self.scrollmax = 0
+                    self.state = -1
+                    self.page = 0
+                    self.scrollmax = 0
+                    self.maxpage = 0
+                    self.serstate = -1
+                    self.MenuKeyCheck = -100
+                    self.count = -1
+                    self.iserviceAreaName.clear()
+                    self.irouteName.clear()
+                    self.idirection.clear()
+                    self.ibatchMenu.clear()
+                    self.isalePrice.clear()
+                    self.listlen = -1
+
 
 
             if(self.state != -1):
@@ -202,9 +329,105 @@ class Data:
                     if(event.button == MOUSE_WHEEL_DOWN):
                         if(self.page < self.scrollmax - 20):
                             self.page += 1
+                            #self.MenuKeyCheck -= 1
                     if(event.button == MOUSE_WHEEL_UP):
                         if(self.page > 0):
                             self.page -= 1
+                            #self.MenuKeyCheck += 1
+
+                    if(event.button == MOUSE_LEFT):
+                        for i in range(self.page, self.page + self.maxpage):
+                            #print(self.page)
+                            #print(self.MenuKeyCheck)
+
+                            # print(self.count)
+                            #
+                            # for i in self.idirection:
+                            #     print(i)
+
+                            if(self.collide(mx, my, 120, 134 + (i * 30) - (self.page * 30), 200, 30)):
+                                self.MenuKeyCheck = i
+
+
+                            elif(self.collide(mx, my, 775, 350, 100, 100)):
+                                self.serstate = 1
+
+                                if(self.state == self.SERVICE_AREA_NAME):
+                                    self.count = self.sserviceAreaName.count(self.serviceAreaName[self.MenuKeyCheck])
+                                    #self.index = self.sserviceAreaName.index(self.serviceAreaName[self.MenuKeyCheck])
+
+                                    for i in range(0, 185):
+                                        if(self.count == len(self.iserviceAreaName)):
+                                            break
+
+                                        if(self.sserviceAreaName[i] == self.serviceAreaName[self.MenuKeyCheck]):
+                                            self.iserviceAreaName.append(i)
+
+                                    self.listlen = len(self.iserviceAreaName)
+
+
+                                elif(self.state == self.ROUTE_NAME):
+                                    self.count = self.srouteName.count(self.routeName[self.MenuKeyCheck])
+                                   # self.index = self.srouteName.index(self.routeName[self.MenuKeyCheck])
+
+                                    for i in range(0, 185):
+                                        if(self.count == len(self.irouteName)):
+                                            break
+
+                                        if(self.srouteName[i] == self.routeName[self.MenuKeyCheck]):
+                                            self.irouteName.append(i)
+
+                                    self.listlen = self.irouteName
+
+
+                                elif(self.state == self.DIRECTION):
+                                    self.count = self.sdirection.count(self.direction[self.MenuKeyCheck])
+                                    #self.index = self.sdirection.index(self.direction[self.MenuKeyCheck])
+
+                                    for i in range(0, 185):
+                                        if(self.count == len(self.idirection)):
+                                            break
+
+                                        if(self.sdirection[i] == self.direction[self.MenuKeyCheck]):
+                                            self.idirection.append(i)
+
+                                    self.listlen = len(self.idirection)
+
+
+
+                                elif(self.state == self.BATCH_MENU):
+                                    self.count = self.sbatchMenu.count(self.batchMenu[self.MenuKeyCheck])
+                                    #self.index = self.sbatchMenu.index(self.batchMenu[self.MenuKeyCheck])
+
+                                    for i in range(0, 185):
+                                        if(self.count == len(self.ibatchMenu)):
+                                            break
+
+                                        if(self.sbatchMenu[i] == self.batchMenu[self.MenuKeyCheck]):
+                                            self.ibatchMenu.append(i)
+
+                                    self.listlen = len(self.ibatchMenu)
+
+
+                                elif(self.state == self.SALE_PRICE):
+                                    self.count = self.ssalePrice.count(self.salePrice[self.MenuKeyCheck])
+                                    #self.index = self.ssalePrice.index(self.salePrice[self.MenuKeyCheck])
+
+                                    for i in range(0, 185):
+                                        if(self.count == len(self.isalePrice)):
+                                            break
+
+                                        if(self.ssalePrice[i] == self.salePrice[self.MenuKeyCheck]):
+                                            self.isalePrice.append(i)
+
+                                    self.listlen = len(self.isalePrice)
+
+
+                                break
+
+                                pass
+
+
 
         pass
 
