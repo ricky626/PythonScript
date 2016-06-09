@@ -1,9 +1,0 @@
-Traceback (most recent call last):
-  File "my_action.py", line 12, in <module>
-  File "C:\Users\Administrator\PycharmProjects\TermProject\my_framework.py", line 85, in run
-  File "C:\Users\Administrator\PycharmProjects\TermProject\start_state.py", line 17, in enter
-    
-  File "C:\Users\Administrator\PycharmProjects\TermProject\background.py", line 38, in __init__
-    self.PolygonSizeX[i][j], self.PolygonSizeY[i][j] = random.randint(0, 10), random.randint(0, 10)
-  File "C:\Users\Administrator\PycharmProjects\TermProject\my_engine.py", line 269, in load_image
-OSError
