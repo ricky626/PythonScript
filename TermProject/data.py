@@ -47,6 +47,7 @@ class Data:
             self.board = pygame.image.load("res/gfx/board.png")
             self.loginboard = pygame.image.load("res/gfx/loginboard.png")
             self.login = pygame.image.load("res/gfx/login.png")
+            self.memberboard = pygame.image.load("res/gfx/memberboard.png")
 
             for i in range(0, 5):
                 self.button[i] = pygame.image.load("res/gfx/button.png")
@@ -97,6 +98,7 @@ class Data:
         self.MenuKeyCheck = -100
         self.loginCheck = False
         self.memberlogincheck = False
+        self.memberboardcheck = False
         self.loginindex = -1
         self.loginok = 0
 
@@ -269,7 +271,7 @@ class Data:
 
             if(self.state == -1):
                 pygame.draw.polygon(SCREEN, (255, 80, 80), ((10, 80), (210, 80), (210, 130), (10, 130))) # 10, 80, 210, 130
-                SCREEN.blit(self.font50.render("나만의 기능", True, BLUE), (22, 82))
+                SCREEN.blit(self.font50.render("나만의 기능", True, BLUE), (29, 82))
 
         else:
             SCREEN.blit(self.font30.render("로그인 되어있지 않음", True, (255, 0, 0)), (10, 20))
@@ -290,7 +292,7 @@ class Data:
             SCREEN.blit(self.font50.render("대표메뉴 검색", True, BLACK), (self.buttonX[3] + 100, self.buttonY[3] + 15))
             SCREEN.blit(self.font50.render("가격별 검색", True, BLACK), (self.buttonX[4] + 110, self.buttonY[4] + 15))
 
-            if(self.loginCheck == True):
+            if(self.loginCheck == True and self.memberboardcheck == False):
                 SCREEN.blit(self.loginboard, (240, 220))
 
                 if(self.idcheck == True):
@@ -315,6 +317,9 @@ class Data:
                 #pygame.draw.polygon(SCREEN, (128, 100, 200), ((425, 500), (625, 500), (625, 600), (425, 600))) # 425, 500, 625, 600
                 #pygame.draw.polygon(SCREEN, (128, 100, 200), ((425, 500), (625, 500), (625, 600), (425, 600))) # 425, 500, 625, 600
 
+            if(self.memberboardcheck == True):
+                SCREEN.blit(self.memberboard, (212, 110))
+
 
         else:
             SCREEN.blit(self.board, (112, 134))
@@ -331,26 +336,40 @@ class Data:
                 if(self.state == self.SERVICE_AREA_NAME):
                     for i in range(self.page, self.page + self.maxpage):
                         SCREEN.blit(self.font30.render(self.serviceAreaName[i] + "휴게소", True, BLACK), (120, 134 + (i * 30) - (self.page * 30)))
+                    if(self.MenuKeyCheck != -100):
+                        SCREEN.blit(self.font30.render(self.serviceAreaName[self.MenuKeyCheck] + "휴게소", True, BLUE), (550, 385))
                     pass
 
                 if(self.state == self.ROUTE_NAME):
                     for i in range(self.page, self.page + self.maxpage):
                         SCREEN.blit(self.font30.render(self.routeName[i], True, BLACK), (120, 134 + (i * 30) - (self.page * 30)))
+                    if(self.MenuKeyCheck != -100):
+                        SCREEN.blit(self.font30.render(self.routeName[self.MenuKeyCheck], True, BLUE), (550, 385))
                     pass
 
                 if(self.state == self.DIRECTION):
                     for i in range(self.page, self.page + self.maxpage):
                         SCREEN.blit(self.font30.render(self.direction[i], True, BLACK), (120, 134 + (i * 30) - (self.page * 30)))
+
+                    if(self.MenuKeyCheck != -100):
+                        SCREEN.blit(self.font30.render(self.direction[self.MenuKeyCheck], True, BLUE), (650, 385))
                     pass
 
                 if(self.state == self.BATCH_MENU):
                     for i in range(self.page, self.page + self.maxpage):
                         SCREEN.blit(self.font30.render(self.batchMenu[i], True, BLACK), (120, 134 + (i * 30) - (self.page * 30)))
+
+                    if(self.MenuKeyCheck != -100):
+                        SCREEN.blit(self.font30.render(self.batchMenu[self.MenuKeyCheck], True, BLUE), (550, 385))
+
                     pass
 
                 if(self.state == self.SALE_PRICE):
                     for i in range(self.page, self.page + self.maxpage):
                         SCREEN.blit(self.font30.render(self.salePrice[i].lstrip("￦") + "원", True, BLACK), (120, 134 + (i * 30) - (self.page * 30)))
+
+                    if(self.MenuKeyCheck != -100):
+                        SCREEN.blit(self.font30.render(self.salePrice[self.MenuKeyCheck].lstrip("￦") + "원", True, BLUE), (620, 385))
                     pass
 
                 if(self.MenuKeyCheck != -100):
@@ -360,12 +379,20 @@ class Data:
                         pygame.draw.line(SCREEN, BLACK, [115, 134 + (self.MenuKeyCheck * 30) - (self.page * 30)], [115, 164 + (self.MenuKeyCheck * 30) - (self.page * 30)], 5)
                         pygame.draw.line(SCREEN, BLACK, [400, 134 + (self.MenuKeyCheck * 30) - (self.page * 30)], [400, 164 + (self.MenuKeyCheck * 30) - (self.page * 30)], 5)
                     pygame.draw.polygon(SCREEN, (255, 100, 200), ((775, 350), (875, 350), (875, 450), (775, 450))) # 775, 350, 875, 450
+
+
                     SCREEN.blit(self.font50.render("검색", True, BLACK), (790, 375))
 
+                if(self.state != self.MY_MENU):
+                    SCREEN.blit(self.font50.render("1. 마우스 휠로 스크롤 하세요.", True, BLACK), (510, 150))
+                    SCREEN.blit(self.font50.render("2. 찾으시는 것을 클릭하시고", True, BLACK), (510, 200))
+                    SCREEN.blit(self.font50.render("3. 검색 버튼을 눌러주세요.", True, BLACK), (515, 250))
 
             else:
                 if(self.serstate == 1):
                     SCREEN.blit(self.font50.render("== 검색하신 결과 ==", True, BLACK), (350, 134))  # 설정한 위치에 텍스트 객체를 출력
+                    SCREEN.blit(self.font50.render("마우스 휠로 스크롤 하세요.", True, BLACK), (550, 200))
+
 
                     if(self.state == self.SERVICE_AREA_NAME):
                         self.print_all(SCREEN, self.iserviceAreaName)
@@ -483,7 +510,7 @@ class Data:
                             break
 
 
-                if(self.collide(mx, my, 935, 9, 80, 80) and self.state == -1): # 로그인 버튼
+                if(self.collide(mx, my, 935, 9, 80, 80) and self.state == -1): # 우측상단 로그인하기 버튼
                     if(self.loginCheck == False):
                         self.loginCheck = True
 
@@ -494,26 +521,27 @@ class Data:
                         self.idscanf = str()
                         self.pwscanf = str()
                         self.loginok = 0
+                        self.memberboardcheck = False
 
 
                     pass
 
                 if(self.loginCheck == True):
-                    if(self.collide(mx, my, 417, 341, 314, 50)): # ID
+                    if(self.collide(mx, my, 417, 341, 314, 50) and self.memberboardcheck == False): # ID
                         if(self.idcheck == False):
                             self.idcheck = True
                             if(self.pwcheck == True):
                                 self.pwcheck = False
                         pass
 
-                    elif(self.collide(mx, my, 418, 403, 314, 50)): # PASSWORD
+                    elif(self.collide(mx, my, 418, 403, 314, 50) and self.memberboardcheck == False): # PASSWORD
                         if(self.pwcheck == False):
                             self.pwcheck = True
                             if(self.idcheck == True):
                                 self.idcheck = False
                         pass
 
-                    elif(self.collide(mx, my, 579, 507, 165, 83)): # 로그인하기
+                    elif(self.collide(mx, my, 579, 507, 165, 83) and self.memberboardcheck == False): # 로그인하기
 
                         for i in range(0, len(self.memberID)):
                             if(self.memberID[i] == self.idscanf and self.memberPW[i] == self.pwscanf): # 로그인
@@ -533,6 +561,9 @@ class Data:
                                 self.failsound.play(0)
 
                     elif(self.collide(mx, my, 276, 511, 157, 80)): # 회원가입창 띄우기
+                        if(self.memberboardcheck == False):
+                            self.memberboardcheck = True
+
                         pass
                     else:
                         self.idcheck = False
@@ -561,6 +592,7 @@ class Data:
                     self.idscanf = str()
                     self.pwscanf = str()
                     self.loginok = 0
+                    self.memberboardcheck = False
 
                     if(self.state == self.SERVICE_AREA_NAME):
                         self.iserviceAreaName.clear()
@@ -618,7 +650,7 @@ class Data:
                                 self.MenuKeyCheck = i
 
 
-                            elif(self.collide(mx, my, 775, 350, 100, 100)):
+                            elif(self.collide(mx, my, 775, 350, 100, 100) and self.MenuKeyCheck != -100): # 검색
                                 self.serstate = 1
 
                                 if(self.state == self.SERVICE_AREA_NAME):
