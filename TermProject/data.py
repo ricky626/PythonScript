@@ -99,6 +99,22 @@ class Data:
         self.loginCheck = False
         self.memberlogincheck = False
         self.memberboardcheck = False
+
+        self.memnamecheck = False
+        self.memnamescanf = str()
+
+        self.memidcheck = False
+        self.memidscanf = str()
+
+        self.mempwcheck = False
+        self.mempwscanf= str()
+
+        self.memdircheck = False
+        self.memdirscanf = str()
+
+        self.memphonecheck = False
+        self.memphonescanf = str()
+
         self.loginindex = -1
         self.loginok = 0
 
@@ -279,6 +295,7 @@ class Data:
 
         SCREEN.blit(self.home, (8, 680))
         SCREEN.blit(self.font80.render("휴게소 맛집 Finder", True, BLACK), (300, 20))
+
         if(self.state == -1):
             SCREEN.blit(self.login, (935, 9))
 
@@ -309,7 +326,7 @@ class Data:
                 SCREEN.blit(self.font30.render(self.idscanf, True, BLACK), (422, 350))
 
                 for i in range(0, len(self.pwscanf)):
-                    SCREEN.blit(self.font30.render("*", True, BLACK), (422 + (i * 15), 410))
+                    SCREEN.blit(self.font30.render("*", True, BLACK), (422 + (i * 15), 412))
 
                 if(self.loginok == -1):
                     SCREEN.blit(self.font30.render("입력하신 정보가 맞지 않습니다.", True, (255, 0, 0)), (452, 466))
@@ -319,6 +336,51 @@ class Data:
 
             if(self.memberboardcheck == True):
                 SCREEN.blit(self.memberboard, (212, 110))
+                pygame.draw.polygon(SCREEN, WHITE, ((369, 257), (647, 257), (647, 302), (369, 302))) # NAME
+                pygame.draw.polygon(SCREEN, WHITE, ((369, 310), (647, 310), (647, 355), (369, 355))) # ID
+                pygame.draw.polygon(SCREEN, WHITE, ((369, 363), (647, 363), (647, 408), (369, 408))) # PW
+                pygame.draw.polygon(SCREEN, WHITE, ((369, 416), (647, 416), (647, 461), (369, 461))) # DIR
+                pygame.draw.polygon(SCREEN, WHITE, ((369, 469), (647, 469), (647, 514), (369, 514))) # PHONE
+
+                SCREEN.blit(self.font30.render(self.memnamescanf, True, BLACK), (374, 260))
+                SCREEN.blit(self.font30.render(self.memidscanf, True, BLACK), (374, 313))
+
+                for i in range(0, len(self.mempwscanf)):
+                    SCREEN.blit(self.font30.render("*", True, BLACK), (374 + (i * 15), 368))
+
+                SCREEN.blit(self.font30.render(self.memdirscanf, True, BLACK), (374, 421))
+                SCREEN.blit(self.font30.render(self.memphonescanf, True, BLACK), (374, 474))
+
+                if(self.memnamecheck == True):
+                    pygame.draw.line(SCREEN, BLACK, [369, 257], [647, 257], 5)
+                    pygame.draw.line(SCREEN, BLACK, [647, 257], [647, 302], 5)
+                    pygame.draw.line(SCREEN, BLACK, [647, 302], [369, 302], 5)
+                    pygame.draw.line(SCREEN, BLACK, [369, 302], [369, 257], 5)
+
+                elif(self.memidcheck == True):
+                    pygame.draw.line(SCREEN, BLACK, [369, 310], [647, 310], 5)
+                    pygame.draw.line(SCREEN, BLACK, [647, 310], [647, 355], 5)
+                    pygame.draw.line(SCREEN, BLACK, [647, 355], [369, 355], 5)
+                    pygame.draw.line(SCREEN, BLACK, [369, 355], [369, 310], 5)
+
+                elif(self.mempwcheck == True):
+                    pygame.draw.line(SCREEN, BLACK, [369, 363], [647, 363], 5)
+                    pygame.draw.line(SCREEN, BLACK, [647, 363], [647, 408], 5)
+                    pygame.draw.line(SCREEN, BLACK, [647, 408], [369, 408], 5)
+                    pygame.draw.line(SCREEN, BLACK, [369, 408], [369, 363], 5)
+
+                elif(self.memdircheck == True):
+                    pygame.draw.line(SCREEN, BLACK, [369, 416], [647, 416], 5)
+                    pygame.draw.line(SCREEN, BLACK, [647, 416], [647, 461], 5)
+                    pygame.draw.line(SCREEN, BLACK, [647, 461], [369, 461], 5)
+                    pygame.draw.line(SCREEN, BLACK, [369, 461], [369, 416], 5)
+
+                elif(self.memphonecheck == True):
+                    pygame.draw.line(SCREEN, BLACK, [369, 469], [647, 469], 5)
+                    pygame.draw.line(SCREEN, BLACK, [647, 469], [647, 514], 5)
+                    pygame.draw.line(SCREEN, BLACK, [647, 514], [369, 514], 5)
+                    pygame.draw.line(SCREEN, BLACK, [369, 514], [369, 469], 5)
+
 
 
         else:
@@ -411,79 +473,196 @@ class Data:
     def handle_events(self, event):
 
         if(event.type == pygame.KEYDOWN):
+            print(self.memnamescanf)
+            print(self.memidscanf)
+            print(self.mempwscanf)
+
+            if(self.loginCheck == True):
+                if(self.idcheck == True):
+                    self.clicksound.play(0)
+                    if(event.key == K_BACKSPACE):
+                        self.idscanf = self.idscanf[:-1]
+
+                    elif(event.key == K_TAB):
+                        self.idcheck = False
+                        self.pwcheck = True
+
+                    elif(event.key == K_RETURN):
+                        for i in range(0, len(self.memberID)):
+                            if(self.memberID[i] == self.idscanf and self.memberPW[i] == self.pwscanf): # 로그인
+                                self.loginindex = i
+                                self.loginCheck = False
+                                self.memberlogincheck = True
+                                self.idcheck = False
+                                self.pwcheck = False
+                                self.idscanf = str()
+                                self.pwscanf = str()
+                                self.loginok = 0
+                                self.clearsound.play(0)
+                                break
+                            elif(i == len(self.memberID)-1):
+                                self.loginok = -1
+                                self.failsound.play(0)
+
+                    else:
+                        self.idscanf += chr(event.key)
+
+                elif(self.pwcheck == True):
+                    self.clicksound.play(0)
+                    if(event.key == K_BACKSPACE):
+                        self.pwscanf = self.pwscanf[:-1]
+
+                    elif(event.key == K_TAB):
+                        self.pwcheck = False
+                        self.idcheck = True
+
+                    elif(event.key == K_RETURN):
+                        for i in range(0, len(self.memberID)):
+                            if(self.memberID[i] == self.idscanf and self.memberPW[i] == self.pwscanf): # 로그인
+                                self.loginindex = i
+                                self.loginCheck = False
+                                self.memberlogincheck = True
+                                self.idcheck = False
+                                self.pwcheck = False
+                                self.idscanf = str()
+                                self.pwscanf = str()
+                                self.loginok = 0
+                                self.clearsound.play(0)
+                                break
+                            elif(i == len(self.memberID)-1):
+                                self.loginok = -1
+                                self.failsound.play(0)
 
 
-            if(self.idcheck == True):
-                self.clicksound.play(0)
-                if(event.key == K_BACKSPACE):
-                    self.idscanf = self.idscanf[:-1]
+                    else:
+                        self.pwscanf += chr(event.key)
 
-                elif(event.key == K_TAB):
-                    self.idcheck = False
-                    self.pwcheck = True
+            if(self.memberboardcheck == True):
 
-                elif(event.key == K_RETURN):
-                    for i in range(0, len(self.memberID)):
-                        if(self.memberID[i] == self.idscanf and self.memberPW[i] == self.pwscanf): # 로그인
-                            self.loginindex = i
-                            self.loginCheck = False
-                            self.memberlogincheck = True
-                            self.idcheck = False
-                            self.pwcheck = False
-                            self.idscanf = str()
-                            self.pwscanf = str()
-                            self.loginok = 0
-                            self.clearsound.play(0)
-                            break
-                        elif(i == len(self.memberID)-1):
-                            self.loginok = -1
-                            self.failsound.play(0)
+                if(self.memnamecheck == True):
+                    self.clicksound.play(0)
+                    if(event.key == K_BACKSPACE):
+                        self.memnamescanf = self.memnamescanf[:-1]
+                    elif(event.key == K_TAB):
+                        self.memnamecheck = False
+                        self.memidcheck = True
+                    elif(event.key == K_RETURN): # 회원가입 완료
+                        self.clearsound.play(0)
+                        self.memberID.append(self.memidscanf)
+                        self.memberPW.append(self.mempwscanf)
+                        self.filewrite(self.memberID, "res/memberDB/memberID.datab")
+                        self.filewrite(self.memberPW, "res/memberDB/memberPW.datab")
+                        self.memberboardcheck = False
+                        self.memnamescanf = str()
+                        self.memidscanf = str()
+                        self.mempwscanf = str()
+                        self.memdirscanf = str()
+                        self.memphonescanf = str()
 
-                else:
-                    self.idscanf += chr(event.key)
-
-            elif(self.pwcheck == True):
-                self.clicksound.play(0)
-                if(event.key == K_BACKSPACE):
-                    self.pwscanf = self.pwscanf[:-1]
-
-                elif(event.key == K_TAB):
-                    self.pwcheck = False
-                    self.idcheck = True
-
-                elif(event.key == K_RETURN):
-                    for i in range(0, len(self.memberID)):
-                        if(self.memberID[i] == self.idscanf and self.memberPW[i] == self.pwscanf): # 로그인
-                            self.loginindex = i
-                            self.loginCheck = False
-                            self.memberlogincheck = True
-                            self.idcheck = False
-                            self.pwcheck = False
-                            self.idscanf = str()
-                            self.pwscanf = str()
-                            self.loginok = 0
-                            self.clearsound.play(0)
-                            break
-                        elif(i == len(self.memberID)-1):
-                            self.loginok = -1
-                            self.failsound.play(0)
-
-                else:
-                    self.pwscanf += chr(event.key)
-                pass
+                    else:
+                        self.memnamescanf += chr(event.key)
 
 
 
-            print(self.idscanf)
-            print(self.pwscanf)
-            print(len(self.pwscanf))
+                elif(self.memidcheck == True):
+                    self.clicksound.play(0)
+                    if(event.key == K_BACKSPACE):
+                        self.memidscanf = self.memidscanf[:-1]
+                    elif(event.key == K_TAB):
+                        self.memidcheck = False
+                        self.mempwcheck = True
+                    elif(event.key == K_RETURN): # 회원가입 완료
+                        self.clearsound.play(0)
+                        self.memberID.append(self.memidscanf)
+                        self.memberPW.append(self.mempwscanf)
+                        self.filewrite(self.memberID, "res/memberDB/memberID.datab")
+                        self.filewrite(self.memberPW, "res/memberDB/memberPW.datab")
+                        self.memberboardcheck = False
+                        self.memnamescanf = str()
+                        self.memidscanf = str()
+                        self.mempwscanf = str()
+                        self.memdirscanf = str()
+                        self.memphonescanf = str()
+
+                    else:
+                        self.memidscanf += chr(event.key)
+
+                elif(self.mempwcheck == True):
+                    self.clicksound.play(0)
+                    if(event.key == K_BACKSPACE):
+                        self.mempwscanf = self.mempwscanf[:-1]
+                    elif(event.key == K_TAB):
+                        self.mempwcheck = False
+                        self.memdircheck = True
+                    elif(event.key == K_RETURN): # 회원가입 완료
+                        self.clearsound.play(0)
+                        self.memberID.append(self.memidscanf)
+                        self.memberPW.append(self.mempwscanf)
+                        self.filewrite(self.memberID, "res/memberDB/memberID.datab")
+                        self.filewrite(self.memberPW, "res/memberDB/memberPW.datab")
+                        self.memberboardcheck = False
+                        self.memnamescanf = str()
+                        self.memidscanf = str()
+                        self.mempwscanf = str()
+                        self.memdirscanf = str()
+                        self.memphonescanf = str()
+
+                    else:
+                        self.mempwscanf += chr(event.key)
+
+                elif(self.memdircheck == True):
+                    self.clicksound.play(0)
+                    if(event.key == K_BACKSPACE):
+                        self.memdirscanf = self.memdirscanf[:-1]
+                    elif(event.key == K_TAB):
+                        self.memdircheck = False
+                        self.memphonecheck = True
+                    elif(event.key == K_RETURN): # 회원가입 완료
+                        self.clearsound.play(0)
+                        self.memberID.append(self.memidscanf)
+                        self.memberPW.append(self.mempwscanf)
+                        self.filewrite(self.memberID, "res/memberDB/memberID.datab")
+                        self.filewrite(self.memberPW, "res/memberDB/memberPW.datab")
+                        self.memberboardcheck = False
+                        self.memnamescanf = str()
+                        self.memidscanf = str()
+                        self.mempwscanf = str()
+                        self.memdirscanf = str()
+                        self.memphonescanf = str()
+
+                    else:
+                        self.memdirscanf += chr(event.key)
+
+                elif(self.memphonecheck == True):
+                    self.clicksound.play(0)
+                    if(event.key == K_BACKSPACE):
+                        self.memphonescanf = self.memphonescanf[:-1]
+                    elif(event.key == K_TAB):
+                        self.memphonecheck = False
+                        self.memnamecheck = True
+                    elif(event.key == K_RETURN): # 회원가입 완료
+                        self.clearsound.play(0)
+                        self.memberID.append(self.memidscanf)
+                        self.memberPW.append(self.mempwscanf)
+                        self.filewrite(self.memberID, "res/memberDB/memberID.datab")
+                        self.filewrite(self.memberPW, "res/memberDB/memberPW.datab")
+                        self.memberboardcheck = False
+                        self.memnamescanf = str()
+                        self.memidscanf = str()
+                        self.mempwscanf = str()
+                        self.memdirscanf = str()
+                        self.memphonescanf = str()
+
+                    else:
+                        self.memphonescanf += chr(event.key)
+
 
         if(event.type == pygame.MOUSEBUTTONDOWN):
             (mx, my) = pygame.mouse.get_pos()
             print(mx, my)
             if(event.button == MOUSE_LEFT):
                 self.clicksound.play(0)
-                if(self.state == -1 and self.loginCheck == False):
+                if(self.state == -1 and self.loginCheck == False and self.memberboardcheck == False):
                     for i in range(0, 5):
                         if(self.collide(mx, my, self.buttonX[i], self.buttonY[i], 400, 80)):
                             self.state = i
@@ -514,6 +693,7 @@ class Data:
                     if(self.loginCheck == False):
                         self.loginCheck = True
 
+
                     else:
                         self.loginCheck = False
                         self.idcheck = False
@@ -521,7 +701,7 @@ class Data:
                         self.idscanf = str()
                         self.pwscanf = str()
                         self.loginok = 0
-                        self.memberboardcheck = False
+                    self.memberboardcheck = False
 
 
                     pass
@@ -563,13 +743,78 @@ class Data:
                     elif(self.collide(mx, my, 276, 511, 157, 80)): # 회원가입창 띄우기
                         if(self.memberboardcheck == False):
                             self.memberboardcheck = True
+                            self.loginCheck = False
+
 
                         pass
                     else:
                         self.idcheck = False
                         self.pwcheck = False
+                        self.idscanf = str()
+                        self.pwscanf = str()
 
-                    pass
+
+
+                if(self.collide(mx, my, 369, 257, 278, 45) and self.memberboardcheck == True): # 회원 가입창 성명
+                    if(self.memnamecheck == False):
+                        self.memnamecheck = True
+                        self.memidcheck = False
+                        self.mempwcheck = False
+                        self.memdircheck = False
+                        self.memphonecheck = False
+                                
+                elif(self.collide(mx, my, 369, 310, 278, 45) and self.memberboardcheck == True): # 회원가입창 아이디
+                    if(self.memidcheck == False):
+                        self.memidcheck = True
+                        self.memnamecheck = False
+                        self.mempwcheck = False
+                        self.memdircheck = False
+                        self.memphonecheck = False
+                                
+                elif(self.collide(mx, my, 369, 363, 278, 45) and self.memberboardcheck == True): # 회원가입창 비번
+                    if(self.mempwcheck == False):
+                        self.mempwcheck = True
+                        self.memnamecheck = False
+                        self.memidcheck = False
+                        self.memdircheck = False
+                        self.memphonecheck = False
+                                
+                elif(self.collide(mx, my, 369, 416, 278, 45) and self.memberboardcheck == True): # 회원가입창 지역
+                    if(self.memdircheck == False):
+                        self.memdircheck = True
+                        self.memnamecheck = False
+                        self.mempwcheck = False
+                        self.memidcheck = False
+                        self.memphonecheck = False
+                                
+                elif(self.collide(mx, my, 369, 469, 278, 45) and self.memberboardcheck == True): # 회원가입창 연락처
+                    if(self.memphonecheck == False):
+                        self.memphonecheck = True
+                        self.memnamecheck = False
+                        self.mempwcheck = False
+                        self.memdircheck = False
+                        self.memidcheck = False
+
+                elif(self.collide(mx, my, 384, 562, 232, 91) and self.memberboardcheck == True): # 회원 가입하기 버튼
+                    self.clearsound.play(0)
+                    self.memberID.append(self.memidscanf)
+                    self.memberPW.append(self.mempwscanf)
+                    self.filewrite(self.memberID, "res/memberDB/memberID.datab")
+                    self.filewrite(self.memberPW, "res/memberDB/memberPW.datab")
+                    self.memberboardcheck = False
+                    self.memnamescanf = str()
+                    self.memidscanf = str()
+                    self.mempwscanf = str()
+                    self.memdirscanf = str()
+                    self.memphonescanf = str()
+
+    
+                elif(self.memberboardcheck == True):
+                    self.memnamecheck = False
+                    self.memidcheck = False
+                    self.mempwcheck = False
+                    self.memdircheck = False
+                    self.memphonecheck = False
 
                 if(self.state == -1 and self.memberlogincheck == True):
                     if(self.collide(mx, my, 10, 80, 200, 50)):
