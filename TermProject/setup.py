@@ -79,14 +79,14 @@ manifest_template = '''<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 
 
 
-my_action = Target(
-    script = "my_action.py",
+start_state = Target(
+    script = "start_state.py",
     dest_base = "TermProject",
     #icon_resources = [(1, r"res/icon.ico")],
 
 
 
-    other_resources = [(RT_MANIFEST, 1, (manifest_template % dict(prog="my_action", level="asInvoker")).encode("utf-8"))]
+    other_resources = [(RT_MANIFEST, 1, (manifest_template % dict(prog="start_state", level="asInvoker")).encode("utf-8"))]
     )
 
 py2exe_options = dict(
@@ -109,7 +109,7 @@ sdl_dlls = [sdl_folder + file_name for file_name in os.listdir(sdl_folder)]
 
 
 setup(name="name",
-      windows=[my_action],
+      windows=[start_state],
       data_files=[('.', resources), (sdl_folder, sdl_dlls)], # copy resource to '.' folder
       zipfile=None,
       options={"py2exe": py2exe_options},

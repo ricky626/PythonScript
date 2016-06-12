@@ -87,6 +87,12 @@ class Data:
         self.maxserpage = 0
         self.serscrollmax = 0
 
+        self.mcount = -1
+        self.m_list = []
+        self.m_listlen = 0
+        self.maxlistpage = 0
+        self.listpage = 0
+
         self.idscanf = str()
         self.idcheck = False
 
@@ -279,6 +285,46 @@ class Data:
 
             if(364 + (numlist.index(i) * 180) - (self.serpage * 30) > 185 and 364 + (numlist.index(i) * 180) - (self.serpage * 30) < 695):
                 SCREEN.blit(self.font30.render("===============", True, BLACK), (120, 364 + (numlist.index(i) * 180) - (self.serpage * 30)))
+                
+    def print_mymenu(self, SCREEN, numlist):
+
+        if(self.listpage == 0):
+            SCREEN.blit(self.font30.render("===============", True, BLACK), (120, 184))
+
+        for i in numlist:
+
+            if(214 + (numlist.index(i) * 180) - (self.listpage * 30) > 185 and 214 + (numlist.index(i) * 180) - (self.listpage * 30) < 695):
+                if(self.sserviceAreaName[i] != " "):
+                    SCREEN.blit(self.font30.render(self.sserviceAreaName[i] + "휴게소", True, BLACK), (120, 214 + (numlist.index(i) * 180) - (self.listpage * 30)))
+                else:
+                    SCREEN.blit(self.font30.render("휴게소 정보 없음", True, BLACK), (120, 214 + (numlist.index(i) * 180) - (self.listpage * 30)))
+
+            if(244 + (numlist.index(i) * 180) - (self.listpage * 30) > 185 and 244 + (numlist.index(i) * 180) - (self.listpage * 30) < 695):
+                if(self.srouteName[i] != " "):
+                    SCREEN.blit(self.font30.render(self.srouteName[i], True, BLACK), (120, 244 + (numlist.index(i) * 180) - (self.listpage * 30)))
+                else:
+                    SCREEN.blit(self.font30.render("지역 정보 없음", True, BLACK), (120, 244 + (numlist.index(i) * 180) - (self.listpage * 30)))
+
+            if(274 + (numlist.index(i) * 180) - (self.listpage * 30) > 185 and 274 + (numlist.index(i) * 180) - (self.listpage * 30) < 695):
+                if(self.sdirection[i] != " "):
+                    SCREEN.blit(self.font30.render(self.sdirection[i], True, BLACK), (120, 274 + (numlist.index(i) * 180) - (self.listpage * 30)))
+                else:
+                    SCREEN.blit(self.font30.render("고속도로방향 정보 없음", True, BLACK), (120, 274 + (numlist.index(i) * 180) - (self.listpage * 30)))
+
+            if(304 + (numlist.index(i) * 180) - (self.listpage * 30) > 185 and 304 + (numlist.index(i) * 180) - (self.listpage * 30) < 695):
+                if(self.sbatchMenu[i] != " "):
+                    SCREEN.blit(self.font30.render(self.sbatchMenu[i], True, BLACK), (120, 304 + (numlist.index(i) * 180) - (self.listpage * 30)))
+                else:
+                    SCREEN.blit(self.font30.render("대표메뉴 정보 없음", True, BLACK), (120, 304 + (numlist.index(i) * 180) - (self.listpage * 30)))
+
+            if(334 + (numlist.index(i) * 180) - (self.listpage * 30) > 185 and 334 + (numlist.index(i) * 180) - (self.listpage * 30) < 695):
+                if(self.ssalePrice[i] != " "):
+                    SCREEN.blit(self.font30.render(self.ssalePrice[i].lstrip("￦") + "원", True, BLACK), (120, 334 + (numlist.index(i) * 180) - (self.listpage * 30)))
+                else:
+                    SCREEN.blit(self.font30.render("가격 정보 없음", True, BLACK), (120, 334 + (numlist.index(i) * 180) - (self.listpage * 30)))
+
+            if(364 + (numlist.index(i) * 180) - (self.listpage * 30) > 185 and 364 + (numlist.index(i) * 180) - (self.listpage * 30) < 695):
+                SCREEN.blit(self.font30.render("===============", True, BLACK), (120, 364 + (numlist.index(i) * 180) - (self.listpage * 30)))
 
 
     def draw(self, SCREEN):
@@ -286,8 +332,11 @@ class Data:
             SCREEN.blit(self.font30.render(self.memberNAME[self.loginindex] + "님 환영합니다.", True, BLACK), (10, 20))
 
             if(self.state == -1):
-                pygame.draw.polygon(SCREEN, (255, 80, 80), ((10, 80), (210, 80), (210, 130), (10, 130))) # 10, 80, 210, 130
-                SCREEN.blit(self.font50.render("나만의 기능", True, BLUE), (29, 82))
+                pygame.draw.polygon(SCREEN, (80, 80, 255), ((10, 80), (210, 80), (210, 130), (10, 130))) # 10, 80, 210, 130
+                SCREEN.blit(self.font50.render("나만의 기능", True, BLACK), (29, 82))
+                #pygame.draw.polygon(SCREEN, (255, 80, 80), ((10, 80), (210, 80), (210, 130), (10, 130))) # 10, 80, 210, 130
+                pygame.draw.polygon(SCREEN, (255, 80, 80), ((200, 10), (275, 10), (275, 70), (200, 70))) # 200, 10 75, 60
+                SCREEN.blit(self.font30.render("로그아웃", True, BLACK), (205, 25))
 
         else:
             SCREEN.blit(self.font30.render("로그인 되어있지 않음", True, (255, 0, 0)), (10, 20))
@@ -296,7 +345,7 @@ class Data:
         SCREEN.blit(self.home, (8, 680))
         SCREEN.blit(self.font80.render("휴게소 맛집 Finder", True, BLACK), (300, 20))
 
-        if(self.state == -1):
+        if(self.state == -1 and self.memberlogincheck == False):
             SCREEN.blit(self.login, (935, 9))
 
         if(self.state == -1):
@@ -387,12 +436,15 @@ class Data:
             SCREEN.blit(self.board, (112, 134))
 
             if(self.state == self.MY_MENU): # 회원의 나만의 기능
-                SCREEN.blit(self.font50.render("== " + self.memberNAME[self.loginindex] + "님의 위치에서 가장 가까운 맛집입니다. ==", True, BLACK), (150, 138))  # 설정한 위치에 텍스트 객체를 출력
-                SCREEN.blit(self.font50.render(self.sserviceAreaName[int(self.memberINDEX[self.loginindex])] + "휴게소", True, BLACK), (120, 254))
-                SCREEN.blit(self.font50.render(self.srouteName[int(self.memberINDEX[self.loginindex])], True, BLACK), (120, 304))
-                SCREEN.blit(self.font50.render(self.sdirection[int(self.memberINDEX[self.loginindex])], True, BLACK), (120, 354))
-                SCREEN.blit(self.font50.render(self.sbatchMenu[int(self.memberINDEX[self.loginindex])], True, BLACK), (120, 404))
-                SCREEN.blit(self.font50.render(self.ssalePrice[int(self.memberINDEX[self.loginindex])].lstrip("￦") + "원", True, BLACK), (120, 454))
+                SCREEN.blit(self.font50.render("== " + self.memberNAME[self.loginindex] + "님의 위치에서 가장 가까운 맛집입니다. ==", True, BLACK), (139, 138))  # 설정한 위치에 텍스트 객체를 출력
+                self.print_mymenu(SCREEN, self.m_list)
+
+
+                # SCREEN.blit(self.font50.render(self.sserviceAreaName[int(self.memberINDEX[self.loginindex])] + "휴게소", True, BLACK), (120, 254))
+                # SCREEN.blit(self.font50.render(self.srouteName[int(self.memberINDEX[self.loginindex])], True, BLACK), (120, 304))
+                # SCREEN.blit(self.font50.render(self.sdirection[int(self.memberINDEX[self.loginindex])], True, BLACK), (120, 354))
+                # SCREEN.blit(self.font50.render(self.sbatchMenu[int(self.memberINDEX[self.loginindex])], True, BLACK), (120, 404))
+                # SCREEN.blit(self.font50.render(self.ssalePrice[int(self.memberINDEX[self.loginindex])].lstrip("￦") + "원", True, BLACK), (120, 454))
 
             if(self.serstate == -1):
                 if(self.state == self.SERVICE_AREA_NAME):
@@ -473,9 +525,7 @@ class Data:
     def handle_events(self, event):
 
         if(event.type == pygame.KEYDOWN):
-            print(self.memnamescanf)
-            print(self.memidscanf)
-            print(self.mempwscanf)
+
 
             if(self.loginCheck == True):
                 if(self.idcheck == True):
@@ -659,7 +709,7 @@ class Data:
 
         if(event.type == pygame.MOUSEBUTTONDOWN):
             (mx, my) = pygame.mouse.get_pos()
-            print(mx, my)
+
             if(event.button == MOUSE_LEFT):
                 self.clicksound.play(0)
                 if(self.state == -1 and self.loginCheck == False and self.memberboardcheck == False):
@@ -689,7 +739,7 @@ class Data:
                             break
 
 
-                if(self.collide(mx, my, 935, 9, 80, 80) and self.state == -1): # 우측상단 로그인하기 버튼
+                if(self.collide(mx, my, 935, 9, 80, 80) and self.state == -1 and self.memberlogincheck == False): # 우측상단 로그인하기 버튼
                     if(self.loginCheck == False):
                         self.loginCheck = True
 
@@ -702,6 +752,12 @@ class Data:
                         self.pwscanf = str()
                         self.loginok = 0
                     self.memberboardcheck = False
+
+                if(self.collide(mx, my, 200, 10, 75, 60) and self.state == -1 and self.memberlogincheck == True):
+                    self.failsound.play(0)
+                    self.memberlogincheck = False
+                    self.loginindex = -1
+                    self.m_list.clear()
 
 
                     pass
@@ -821,6 +877,23 @@ class Data:
                         self.state = self.MY_MENU
 
 
+                        self.mcount = self.sdirection.count(self.memberINDEX[self.loginindex])
+
+
+                        for i in range(0, 185):
+                            if(self.mcount == len(self.m_list)):
+                                 break
+
+                            if(self.sdirection[i] == self.memberINDEX[self.loginindex]):
+                                self.m_list.append(i)
+
+
+                        self.m_listlen = len(self.m_list)
+                        self.maxlistpage = self.m_listlen * 5
+
+
+
+
                 if(self.collide(mx, my, 8, 680, 80, 80)): # home 버튼 + 마우스 충돌 시
 
                     self.page = 0
@@ -829,6 +902,8 @@ class Data:
                     self.serstate = -1
                     self.serpage = 0
                     self.maxserpage = 0
+                    self.listpage = 0
+                    self.maxlistpage = 0
                     self.MenuKeyCheck = -100
                     self.count = -1
                     self.loginCheck = False
@@ -858,7 +933,7 @@ class Data:
             if(self.state != -1):
                 if(event.type == pygame.MOUSEBUTTONDOWN):
 
-                    if(self.serstate != 1):
+                    if(self.serstate != 1 and self.state != self.MY_MENU):
                         if(event.button == MOUSE_WHEEL_DOWN):
                             if(self.page < self.scrollmax - 20):
                                 self.page += 1
@@ -869,7 +944,7 @@ class Data:
                                 self.page -= 1
                                 #self.MenuKeyCheck += 1
 
-                    elif(self.serstate == 1):
+                    elif(self.serstate == 1 and self.state != self.MY_MENU):
                         if(event.button == MOUSE_WHEEL_DOWN):
                             if(self.serpage < self.maxserpage):
                                 self.serpage += 1
@@ -878,6 +953,18 @@ class Data:
                         if(event.button == MOUSE_WHEEL_UP):
                             if(self.serpage > 0):
                                 self.serpage -= 1
+                            pass
+
+                    elif(self.state == self.MY_MENU):
+                        if(event.button == MOUSE_WHEEL_DOWN):
+                            if(self.listpage < self.maxlistpage):
+                                self.listpage += 1
+
+                            pass
+
+                        if(event.button == MOUSE_WHEEL_UP):
+                            if(self.listpage > 0):
+                                self.listpage -= 1
                             pass
 
                     if(event.button == MOUSE_LEFT):
