@@ -208,6 +208,22 @@ class Data:
         pass
 
     def filewrite(self, list, filename):
+        if(list == self.memberINDEX):
+            for i in range(0, len(list)):
+                if(list[i] == 'seoul'):
+                    list[i] = "서울"
+                elif(list[i] == 'incheon'):
+                    list[i] = "인천"
+                elif(list[i] == 'busan'):
+                    list[i] = "부산"
+                elif(list[i] == 'daegu'):
+                    list[i] = "대구"
+                elif(list[i] == "suncheon"):
+                    list[i] = "순천"
+                elif(list[i] == "jeonju"):
+                    list[i] = "전주"
+
+
         f = open(filename, 'w')
         f.write(" ".join(list))
         f.close()
@@ -329,14 +345,15 @@ class Data:
 
     def draw(self, SCREEN):
         if(self.memberlogincheck == True):
-            SCREEN.blit(self.font30.render(self.memberNAME[self.loginindex] + "님 환영합니다.", True, BLACK), (10, 20))
+            SCREEN.blit(self.font30.render(self.memberNAME[self.loginindex] + "님", True, BLACK), (10, 10))
+            SCREEN.blit(self.font30.render("환영합니다.", True, BLACK), (20, 40))
 
             if(self.state == -1):
-                pygame.draw.polygon(SCREEN, (80, 80, 255), ((10, 80), (210, 80), (210, 130), (10, 130))) # 10, 80, 210, 130
-                SCREEN.blit(self.font50.render("나만의 기능", True, BLACK), (29, 82))
+                pygame.draw.polygon(SCREEN, (80, 80, 255), ((10, 90), (210, 90), (210, 140), (10, 140))) # 10, 80, 210, 130
+                SCREEN.blit(self.font50.render("나만의 기능", True, BLACK), (29, 92))
                 #pygame.draw.polygon(SCREEN, (255, 80, 80), ((10, 80), (210, 80), (210, 130), (10, 130))) # 10, 80, 210, 130
-                pygame.draw.polygon(SCREEN, (255, 80, 80), ((200, 10), (275, 10), (275, 70), (200, 70))) # 200, 10 75, 60
-                SCREEN.blit(self.font30.render("로그아웃", True, BLACK), (205, 25))
+                pygame.draw.polygon(SCREEN, (255, 80, 80), ((200, 20), (275, 20), (275, 80), (200, 80))) # 200, 10 75, 60
+                SCREEN.blit(self.font30.render("로그아웃", True, BLACK), (205, 35))
 
         else:
             SCREEN.blit(self.font30.render("로그인 되어있지 않음", True, (255, 0, 0)), (10, 20))
@@ -436,7 +453,7 @@ class Data:
             SCREEN.blit(self.board, (112, 134))
 
             if(self.state == self.MY_MENU): # 회원의 나만의 기능
-                SCREEN.blit(self.font50.render("== " + self.memberNAME[self.loginindex] + "님의 위치에서 가장 가까운 맛집입니다. ==", True, BLACK), (139, 138))  # 설정한 위치에 텍스트 객체를 출력
+                SCREEN.blit(self.font50.render("== " + self.memberNAME[self.loginindex] + "님의 위치에서 가장 가까운 맛집입니다. ==", True, BLACK), (130, 138))  # 설정한 위치에 텍스트 객체를 출력
                 self.print_mymenu(SCREEN, self.m_list)
 
 
@@ -600,8 +617,12 @@ class Data:
                         self.clearsound.play(0)
                         self.memberID.append(self.memidscanf)
                         self.memberPW.append(self.mempwscanf)
+                        self.memberNAME.append(self.memnamescanf)
+                        self.memberINDEX.append(self.memdirscanf)
                         self.filewrite(self.memberID, "res/memberDB/memberID.datab")
                         self.filewrite(self.memberPW, "res/memberDB/memberPW.datab")
+                        self.filewrite(self.memberNAME, "res/memberDB/memberNAME.datab")
+                        self.filewrite(self.memberINDEX, "res/memberDB/memberINDEX.datab")
                         self.memberboardcheck = False
                         self.memnamescanf = str()
                         self.memidscanf = str()
@@ -625,8 +646,12 @@ class Data:
                         self.clearsound.play(0)
                         self.memberID.append(self.memidscanf)
                         self.memberPW.append(self.mempwscanf)
+                        self.memberNAME.append(self.memnamescanf)
+                        self.memberINDEX.append(self.memdirscanf)
                         self.filewrite(self.memberID, "res/memberDB/memberID.datab")
                         self.filewrite(self.memberPW, "res/memberDB/memberPW.datab")
+                        self.filewrite(self.memberNAME, "res/memberDB/memberNAME.datab")
+                        self.filewrite(self.memberINDEX, "res/memberDB/memberINDEX.datab")
                         self.memberboardcheck = False
                         self.memnamescanf = str()
                         self.memidscanf = str()
@@ -648,8 +673,12 @@ class Data:
                         self.clearsound.play(0)
                         self.memberID.append(self.memidscanf)
                         self.memberPW.append(self.mempwscanf)
+                        self.memberNAME.append(self.memnamescanf)
+                        self.memberINDEX.append(self.memdirscanf)
                         self.filewrite(self.memberID, "res/memberDB/memberID.datab")
                         self.filewrite(self.memberPW, "res/memberDB/memberPW.datab")
+                        self.filewrite(self.memberNAME, "res/memberDB/memberNAME.datab")
+                        self.filewrite(self.memberINDEX, "res/memberDB/memberINDEX.datab")
                         self.memberboardcheck = False
                         self.memnamescanf = str()
                         self.memidscanf = str()
@@ -671,8 +700,12 @@ class Data:
                         self.clearsound.play(0)
                         self.memberID.append(self.memidscanf)
                         self.memberPW.append(self.mempwscanf)
+                        self.memberNAME.append(self.memnamescanf)
+                        self.memberINDEX.append(self.memdirscanf)
                         self.filewrite(self.memberID, "res/memberDB/memberID.datab")
                         self.filewrite(self.memberPW, "res/memberDB/memberPW.datab")
+                        self.filewrite(self.memberNAME, "res/memberDB/memberNAME.datab")
+                        self.filewrite(self.memberINDEX, "res/memberDB/memberINDEX.datab")
                         self.memberboardcheck = False
                         self.memnamescanf = str()
                         self.memidscanf = str()
@@ -694,8 +727,12 @@ class Data:
                         self.clearsound.play(0)
                         self.memberID.append(self.memidscanf)
                         self.memberPW.append(self.mempwscanf)
+                        self.memberNAME.append(self.memnamescanf)
+                        self.memberINDEX.append(self.memdirscanf)
                         self.filewrite(self.memberID, "res/memberDB/memberID.datab")
                         self.filewrite(self.memberPW, "res/memberDB/memberPW.datab")
+                        self.filewrite(self.memberNAME, "res/memberDB/memberNAME.datab")
+                        self.filewrite(self.memberINDEX, "res/memberDB/memberINDEX.datab")
                         self.memberboardcheck = False
                         self.memnamescanf = str()
                         self.memidscanf = str()
@@ -855,8 +892,12 @@ class Data:
                     self.clearsound.play(0)
                     self.memberID.append(self.memidscanf)
                     self.memberPW.append(self.mempwscanf)
+                    self.memberNAME.append(self.memnamescanf)
+                    self.memberINDEX.append(self.memdirscanf)
                     self.filewrite(self.memberID, "res/memberDB/memberID.datab")
                     self.filewrite(self.memberPW, "res/memberDB/memberPW.datab")
+                    self.filewrite(self.memberNAME, "res/memberDB/memberNAME.datab")
+                    self.filewrite(self.memberINDEX, "res/memberDB/memberINDEX.datab")
                     self.memberboardcheck = False
                     self.memnamescanf = str()
                     self.memidscanf = str()
